@@ -102,16 +102,16 @@
         // test capacity and eviction 
         private static void CapacityTest()
         {
-            Cache<ulong, string>.Instance.Clear();
+            Cache<uint, string>.Instance.Clear();
 
-            for (ulong i = 0; i < Cache<string, string>.Instance.Capacity * 10; i++)
+            for (uint i = 0; i < 1000; i++)
             {
                 string data = RandomString(6);
 
-                Cache<ulong, string>.Instance.Add(i, data);
+                Cache<uint, string>.Instance.Add(i, data);
             }
 
-            Cache<ulong, string>.Instance.Log();
+            Cache<uint, string>.Instance.Log();
         }
 
         // random string of length

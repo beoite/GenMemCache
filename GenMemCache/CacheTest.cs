@@ -6,21 +6,23 @@
         {
             Logger.Log(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
 
-            IntInt();
+            // add some keys and data then prints the contents, along with a test of the Get method
 
-            UlongString();
+            IntInt();
 
             GuidString();
 
             StringString();
 
-            CapacityTest();
+            // test capacity and eviction 
+
+            CapacityTest capacityTest = new CapacityTest();
         }
 
-        // Cache<int, int>,  adds some keys and data then prints the contents, along with a test of the Get method
+        // Cache<int, int>
         private static void IntInt()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 101; i++)
             {
                 int data = System.Random.Shared.Next(100);
 
@@ -34,24 +36,7 @@
             Logger.Log("key 4 : " + Cache<int, int>.Instance.Get(4).ToString());
         }
 
-        // Cache<ulong, string>,  adds some keys and data then prints the contents, along with a test of the Get method
-        private static void UlongString()
-        {
-            for (ulong i = 0; i < 10; i++)
-            {
-                string data = RandomString(6);
-
-                Cache<ulong, string>.Instance.Add(i, data);
-            }
-
-            Cache<ulong, string>.Instance.Add(111, null);
-
-            Cache<ulong, string>.Instance.Log();
-
-            Logger.Log("key 4 : " + Cache<ulong, string>.Instance.Get(4)?.ToString());
-        }
-
-        // Cache<Guid, string>,  adds some keys and data then prints the contents, along with a test of the Get method
+        // Cache<Guid, string>
         private static void GuidString()
         {
             Guid test = Guid.NewGuid();
@@ -60,7 +45,7 @@
             {
                 Guid key = Guid.NewGuid();
 
-                string data = RandomString(6);
+                string data = Utility.RandomString(6);
 
                 Cache<Guid, string>.Instance.Add(key, data);
 
@@ -77,7 +62,7 @@
             Logger.Log("key " + test + " : " + Cache<Guid, string>.Instance.Get(test)?.ToString());
         }
 
-        // Cache<string, string>,  adds some keys and data then prints the contents, along with a test of the Get method
+        // Cache<string, string>
         private static void StringString()
         {
             Cache<string, string>.Instance.Add(null, "");
@@ -97,29 +82,6 @@
             Cache<string, string>.Instance.Log();
 
             Logger.Log("key 4 : " + Cache<string, string>.Instance.Get("4")?.ToString());
-        }
-
-        // test capacity and eviction 
-        private static void CapacityTest()
-        {
-            Cache<uint, string>.Instance.Clear();
-
-            for (uint i = 0; i < 1000; i++)
-            {
-                string data = RandomString(6);
-
-                Cache<uint, string>.Instance.Add(i, data);
-            }
-
-            Cache<uint, string>.Instance.Log();
-        }
-
-        // random string of length
-        private static string RandomString(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[System.Random.Shared.Next(s.Length)]).ToArray());
         }
     }
 }

@@ -43,9 +43,16 @@
                 return default;
             }
 
-            linkedList.Remove(key);
+            bool contains = dictionary.ContainsKey(key);
 
-            linkedList.AddFirst(key);
+            bool isRemoved = linkedList.Remove(key);
+
+            if (contains == false)
+            {
+                return default;
+            }
+
+            LinkedListNode<K> node = linkedList.AddFirst(key);
 
             return dictionary[key];
         }
@@ -62,9 +69,13 @@
 
             K key = node.Value;
 
-            linkedList.Remove(key);
+            CapacityReachedEventArgs<K> capacityReachedEventArgs = new CapacityReachedEventArgs<K>();
 
-            dictionary.Remove(key);
+            OnCapacityReached(capacityReachedEventArgs);
+
+            bool isRemovedList = linkedList.Remove(key);
+
+            bool isRemovedDictionary = dictionary.Remove(key);
         }
 
         // clear the cache
@@ -103,5 +114,23 @@
                 Traverse(node.Next);
             }
         }
+
+        // https://learn.microsoft.com/en-us/dotnet/api/system.eventhandler-1?view=net-8.0
+        protected virtual void OnCapacityReached(CapacityReachedEventArgs<K> e)
+        {
+            if (CapacityReached is null)
+            {
+                return;
+            }
+
+            EventHandler<CapacityReachedEventArgs<K>> handler = CapacityReached;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<CapacityReachedEventArgs<K>>? CapacityReached;
     }
 }

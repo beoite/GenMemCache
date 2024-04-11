@@ -6,7 +6,7 @@
         {
             Logger.Log(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
 
-            // add some keys and data then prints the contents, along with a test of the Get method
+            // add some keys and data then print the contents, along with a test of the Get method
 
             IntInt();
 
@@ -22,7 +22,7 @@
         // Cache<int, int>
         private static void IntInt()
         {
-            for (int i = 0; i < 101; i++)
+            for (int i = 0; i < 10; i++)
             {
                 int data = System.Random.Shared.Next(100);
 
@@ -78,6 +78,10 @@
             Cache<string, string>.Instance.Add("4", "l");
 
             Cache<string, string>.Instance.Add("5", "o");
+
+            Cache<string, string>.Instance.Add("duplicate", "1");
+
+            Cache<string, string>.Instance.Add("duplicate", "2");
 
             Cache<string, string>.Instance.Log();
 

@@ -30,12 +30,23 @@
                 Evict();
             }
 
-            linkedList.AddFirst(key);
+            bool containsKey = dictionary.ContainsKey(key);
 
-            dictionary.Add(key, data);
+            if (containsKey == true)
+            {
+                dictionary[key] = data;
+            }
+            else
+            {
+                dictionary.Add(key, data);
+            }
+
+            bool isRemoved = linkedList.Remove(key);
+
+            linkedList.AddFirst(key);
         }
 
-        // return an item from the cache
+        // return an item from the cache, add its key to the head of the list
         public V? Get(K? key)
         {
             if (key is null)
@@ -43,11 +54,11 @@
                 return default;
             }
 
-            bool contains = dictionary.ContainsKey(key);
+            bool containsKey = dictionary.ContainsKey(key);
 
             bool isRemoved = linkedList.Remove(key);
 
-            if (contains == false)
+            if (containsKey == false)
             {
                 return default;
             }
@@ -71,6 +82,8 @@
 
             CapacityReachedEventArgs<K> capacityReachedEventArgs = new CapacityReachedEventArgs<K>();
 
+            capacityReachedEventArgs.Message = nameof(Evict) + " " + key.ToString();
+
             OnCapacityReached(capacityReachedEventArgs);
 
             bool isRemovedList = linkedList.Remove(key);
@@ -89,7 +102,6 @@
         // log the cache to console
         public void Log()
         {
-            Logger.Log(System.Environment.NewLine);
             Logger.Log(nameof(Log) + " <" + typeof(K).ToString() + ", " + typeof(V).ToString() + ">");
 
             Traverse(linkedList.First);
@@ -125,7 +137,7 @@
 
             EventHandler<CapacityReachedEventArgs<K>> handler = CapacityReached;
 
-            if (handler != null)
+            if (handler is not null)
             {
                 handler(this, e);
             }

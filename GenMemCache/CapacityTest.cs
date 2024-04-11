@@ -29,7 +29,7 @@
 
         private void CapacityReachedHandler(object? sender, CapacityReachedEventArgs<int> e)
         {
-            Logger.Log(nameof(CapacityReachedHandler) + " " + e.ToString());
+            Logger.Log(nameof(CapacityReachedHandler) + " " + sender?.GetType().ToString() + " " + e.Message);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace GenMemCache
+﻿using System.Linq;
+
+namespace GenMemCacheApp
 {
     public static class Utility
     {

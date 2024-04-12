@@ -2,12 +2,18 @@
 {
     public class Cache<K, V> where K : notnull where V : notnull
     {
+        private const System.Threading.LazyThreadSafetyMode threadSafetyMode = System.Threading.LazyThreadSafetyMode.ExecutionAndPublication;
+
         // https://csharpindepth.com/articles/Singleton
-        private static readonly Lazy<Cache<K, V>> lazy = new Lazy<Cache<K, V>>(() => new Cache<K, V>());
+        private static readonly System.Lazy<Cache<K, V>> lazy = new System.Lazy<Cache<K, V>>(() => new Cache<K, V>(), threadSafetyMode);
 
-        private System.Collections.Generic.Dictionary<K, V> dictionary = new();
+        private System.Collections.Concurrent.ConcurrentDictionary<K, V> dictionary = new System.Collections.Concurrent.ConcurrentDictionary<K, V>();
 
-        private System.Collections.Generic.LinkedList<K> linkedList = new();
+        private System.Collections.Generic.LinkedList<K> linkedList = new System.Collections.Generic.LinkedList<K>();
+
+        private readonly object linkedListLock = new object();
+
+        public Logger Logger { get; set; } = new Logger();
 
         public static Cache<K, V> Instance { get { return lazy.Value; } }
 
@@ -25,7 +31,7 @@
                 return;
             }
 
-            if (dictionary.Count >= Capacity)
+            while (dictionary.Count >= Capacity)
             {
                 Evict();
             }
@@ -38,12 +44,15 @@
             }
             else
             {
-                dictionary.Add(key, data);
+                bool isAdded = dictionary.TryAdd(key, data);
             }
 
-            bool isRemoved = linkedList.Remove(key);
+            lock (linkedListLock)
+            {
+                bool isRemovedList = linkedList.Remove(key);
 
-            linkedList.AddFirst(key);
+                System.Collections.Generic.LinkedListNode<K> node = linkedList.AddFirst(key);
+            }
         }
 
         // return an item from the cache, add its key to the head of the list
@@ -56,14 +65,17 @@
 
             bool containsKey = dictionary.ContainsKey(key);
 
-            bool isRemoved = linkedList.Remove(key);
-
             if (containsKey == false)
             {
                 return default;
             }
 
-            LinkedListNode<K> node = linkedList.AddFirst(key);
+            lock (linkedListLock)
+            {
+                bool isRemovedList = linkedList.Remove(key);
+
+                System.Collections.Generic.LinkedListNode<K> node = linkedList.AddFirst(key);
+            }
 
             return dictionary[key];
         }
@@ -71,24 +83,29 @@
         // The cache should implement the ‘least recently used’ approach when selecting which item to evict.
         private void Evict()
         {
-            LinkedListNode<K>? node = linkedList.Last;
-
-            if (node is null)
+            lock (linkedListLock)
             {
-                return;
+                System.Collections.Generic.LinkedListNode<K>? node = linkedList.Last;
+
+                if (node is null)
+                {
+                    return;
+                }
+
+                K key = node.Value;
+
+                bool isRemovedList = linkedList.Remove(key);
+
+                V? outItem = default;
+
+                bool isRemovedDictionary = dictionary.TryRemove(key, out outItem);
+
+                CapacityReachedEventArgs<K> capacityReachedEventArgs = new CapacityReachedEventArgs<K>();
+
+                capacityReachedEventArgs.Message = nameof(Evict) + " " + key.ToString();
+
+                OnCapacityReached(capacityReachedEventArgs);
             }
-
-            K key = node.Value;
-
-            CapacityReachedEventArgs<K> capacityReachedEventArgs = new CapacityReachedEventArgs<K>();
-
-            capacityReachedEventArgs.Message = nameof(Evict) + " " + key.ToString();
-
-            OnCapacityReached(capacityReachedEventArgs);
-
-            bool isRemovedList = linkedList.Remove(key);
-
-            bool isRemovedDictionary = dictionary.Remove(key);
         }
 
         // clear the cache
@@ -97,6 +114,8 @@
             dictionary.Clear();
 
             linkedList.Clear();
+
+            Logger.Clear();
         }
 
         // log the cache to console
@@ -105,10 +124,12 @@
             Logger.Log(nameof(Log) + " <" + typeof(K).ToString() + ", " + typeof(V).ToString() + ">");
 
             Traverse(linkedList.First);
+
+            Logger.ConsoleWriteLine();
         }
 
         // recursively traverse nodes
-        private void Traverse(LinkedListNode<K>? node)
+        private void Traverse(System.Collections.Generic.LinkedListNode<K>? node)
         {
             if (node is null)
             {
@@ -135,7 +156,7 @@
                 return;
             }
 
-            EventHandler<CapacityReachedEventArgs<K>> handler = CapacityReached;
+            System.EventHandler<CapacityReachedEventArgs<K>> handler = CapacityReached;
 
             if (handler is not null)
             {
@@ -143,6 +164,6 @@
             }
         }
 
-        public event EventHandler<CapacityReachedEventArgs<K>>? CapacityReached;
+        public event System.EventHandler<CapacityReachedEventArgs<K>>? CapacityReached;
     }
 }

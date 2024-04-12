@@ -1,16 +1,16 @@
 ﻿namespace GenMemCache
 {
-    public static class Logger
+    public class Logger
     {
-        public static System.Diagnostics.Stopwatch Watch { get; set; } = System.Diagnostics.Stopwatch.StartNew();
+        public System.Diagnostics.Stopwatch Watch { get; set; } = System.Diagnostics.Stopwatch.StartNew();
 
-        public static System.Collections.Generic.List<LogEntry> Entries { get; set; } = new System.Collections.Generic.List<LogEntry>();
+        public System.Collections.Generic.List<LogEntry> Entries { get; set; } = new System.Collections.Generic.List<LogEntry>();
 
-        public static ulong Id { get; set; } = 0;
+        public ulong Id { get; set; } = 0;
 
 
         // Usage : Logger.Log(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
-        public static void Log(string text)
+        public void Log(string text)
         {
             long elapsed = Watch.ElapsedMilliseconds;
 
@@ -21,18 +21,28 @@
 
             Entries.Add(logEntry);
 
-            System.Console.WriteLine(Id + "\t" + elapsed + "(ms)" + "\t\t" + text + "\t");
-
             Watch.Restart();
         }
 
-        public static void Clear()
+        public void Clear()
         {
             Entries.Clear();
 
             Watch.Reset();
 
             Id = 0;
+        }
+
+        public void ConsoleWriteLine()
+        {
+            System.Console.WriteLine(System.Environment.NewLine);
+
+            for (int i = 0; i < Entries.Count; i++)
+            {
+                LogEntry logEntry = Entries[i];
+
+                System.Console.WriteLine(logEntry.ToString());
+            }
         }
     }
 }

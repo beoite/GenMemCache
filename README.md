@@ -1,5 +1,5 @@
 <p>
-    A generic in memory cache
+    A generic least recently used in memory cache
 </p>
 
 <p>
@@ -11,11 +11,9 @@
 
     cache.Clear();
 
-    // won't work
-    cache.Add(null, "");
+    cache.Add(null, ""); // won't work
 
-    // won't work
-    cache.Add("", null);
+    cache.Add("", null); // won't work
 
     cache.Add("1", "h");
 
@@ -27,25 +25,23 @@
 
     cache.Add("5", "o");
 
-    cache.Add("duplicate", "1");
+    string duplicate = "duplicate";
 
-    cache.Add("duplicate", "2");
+    cache.Add(duplicate, "1");
 
-    // this is the duplicate saved
-    cache.Add("duplicate", "2");
+    cache.Add(duplicate, "2");
 
-    cache.Log();
-```
-<p>
-    Prints the following:
-</p>
+    cache.Add(duplicate, "3");
 
-```
-1               0(ms)           Log <System.String, System.String>
-2               0(ms)           duplicate        2
-3               0(ms)           5        o
-4               0(ms)           4        l
-5               0(ms)           3        l
-6               0(ms)           2        e
-7               0(ms)           1        h
+    string? data = cache.Get(duplicate);
+
+    System.Console.WriteLine(data); // prints 3
+    
+    //  the cache looks like this
+    //  duplicate   3
+    //  5           o
+    //  4           l
+    //  3           l
+    //  2           e
+    //  1           h
 ```

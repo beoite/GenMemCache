@@ -35,14 +35,16 @@
 
         public void ConsoleWriteLine()
         {
-            System.Console.WriteLine(System.Environment.NewLine);
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
 
             for (int i = 0; i < Entries.Count; i++)
             {
                 LogEntry logEntry = Entries[i];
 
-                System.Console.WriteLine(logEntry.ToString());
+                stringBuilder.Append(logEntry.Text + System.Environment.NewLine);
             }
+
+            System.Console.WriteLine(stringBuilder.ToString());
         }
     }
 }

@@ -1,18 +1,33 @@
-﻿namespace GenMemCacheApp
+﻿using System;
+
+namespace GenMemCacheApp
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            // basic tests
+            Tests();
 
-            TestCache.Run();
+            System.Console.WriteLine("- test metrics (y) ?");
+            ConsoleKeyInfo readKey = Console.ReadKey();
 
-            // test capacity and eviction 
+            if (readKey.KeyChar == 'y')
+            {
+                MainLoop mainLoop = new MainLoop();
+            }
+        }
+
+        private static void Tests()
+        {
+            System.Console.WriteLine("- basic tests");
+
+            TestBasic testBasic = new TestBasic();
+
+            System.Console.WriteLine("- test capacity and eviction");
 
             TestCapacity testCapacity = new TestCapacity();
 
-            // test threading
+            System.Console.WriteLine("- test threading");
 
             TestThreading testThreading = new TestThreading();
         }

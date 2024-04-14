@@ -2,13 +2,13 @@
 {
     public class TestCapacity
     {
+        private GenMemCache.Cache<int, string> cache = GenMemCache.Cache<int, string>.Instance;
+
         public TestCapacity()
         {
-            GenMemCache.Cache<int, string> cache = GenMemCache.Cache<int, string>.Instance;
-
             cache.Clear();
 
-            cache.Capacity = 42;
+            cache.Capacity = 10;
 
             cache.CapacityReached += CapacityReachedHandler;
 
@@ -20,6 +20,8 @@
             }
 
             cache.Log();
+
+            cache.CapacityReached -= CapacityReachedHandler;
         }
 
         private void CapacityReachedHandler(object? sender, GenMemCache.CapacityReachedEventArgs<int> e)

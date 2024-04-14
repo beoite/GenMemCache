@@ -8,7 +8,9 @@
         {
             cache.Clear();
 
-            System.Threading.Tasks.Parallel.For(0, 100, i =>
+            cache.Capacity = 10;
+
+            System.Threading.Tasks.Parallel.For(0, cache.Capacity * 4, i =>
             {
                 Add(i);
             });

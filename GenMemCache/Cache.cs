@@ -17,7 +17,7 @@
 
         public static Cache<K, V> Instance { get { return lazy.Value; } }
 
-        public int Capacity { get; set; } = 20;
+        public int Capacity { get; set; } = 10;
 
         private Cache()
         {
@@ -121,9 +121,15 @@
         // log the cache to console
         public void Log()
         {
+            string headerFooter = "----------------------------------------";
+
+            Logger.Log(headerFooter);
+
             Logger.Log(nameof(Log) + " <" + typeof(K).ToString() + ", " + typeof(V).ToString() + ">");
 
             Traverse(linkedList.First);
+
+            Logger.Log(headerFooter);
 
             Logger.ConsoleWriteLine();
         }
@@ -137,6 +143,13 @@
             }
 
             K key = node.Value;
+
+            bool containsKey = dictionary.ContainsKey(key);
+
+            if (containsKey == false)
+            {
+                return;
+            }
 
             V data = dictionary[key];
 

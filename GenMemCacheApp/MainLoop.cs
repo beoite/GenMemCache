@@ -2,7 +2,7 @@
 {
     public class MainLoop : GenMemCache.Logger
     {
-        private bool sentinal = true;
+        private bool sentinel = false;
 
         private GenMemCache.Cache<int, string> cache = GenMemCache.Cache<int, string>.Instance;
 
@@ -19,7 +19,7 @@
 
             cache.Capacity = capacity;
 
-            while (sentinal == true)
+            while (sentinel == false)
             {
                 long startTicks = System.DateTime.Now.Ticks;
 

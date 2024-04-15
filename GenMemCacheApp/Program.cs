@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GenMemCacheApp
+﻿namespace GenMemCacheApp
 {
     internal class Program
     {
@@ -9,7 +7,8 @@ namespace GenMemCacheApp
             Tests();
 
             System.Console.WriteLine("- test metrics (y) ?");
-            ConsoleKeyInfo readKey = Console.ReadKey();
+
+            System.ConsoleKeyInfo readKey = System.Console.ReadKey();
 
             if (readKey.KeyChar == 'y')
             {

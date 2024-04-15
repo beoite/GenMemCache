@@ -6,7 +6,7 @@
 
         public System.Collections.Generic.List<LogEntry> Entries { get; set; } = new System.Collections.Generic.List<LogEntry>();
 
-        public ulong Id { get; set; } = 0;
+        public uint Id { get; set; } = 0;
 
 
         // Usage : Logger.Log(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name + "." + System.Reflection.MethodBase.GetCurrentMethod()?.Name);
@@ -41,7 +41,7 @@
             {
                 LogEntry logEntry = Entries[i];
 
-                stringBuilder.Append(logEntry.Text + System.Environment.NewLine);
+                stringBuilder.Append(logEntry.ToString() + System.Environment.NewLine);
             }
 
             System.Console.WriteLine(stringBuilder.ToString());

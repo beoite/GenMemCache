@@ -1,6 +1,6 @@
 ﻿namespace GenMemCache
 {
-    public class Cache<K, V> where K : notnull where V : notnull
+    public class Cache<K, V> : Logger where K : notnull where V : notnull
     {
         private const System.Threading.LazyThreadSafetyMode threadSafetyMode = System.Threading.LazyThreadSafetyMode.ExecutionAndPublication;
 
@@ -12,8 +12,6 @@
         private System.Collections.Generic.LinkedList<K> linkedList = new System.Collections.Generic.LinkedList<K>();
 
         private readonly object linkedListLock = new object();
-
-        public Logger Logger { get; set; } = new Logger();
 
         public static Cache<K, V> Instance { get { return lazy.Value; } }
 
@@ -109,13 +107,13 @@
         }
 
         // clear the cache
-        public void Clear()
+        public new void Clear()
         {
+            base.Clear();
+
             dictionary.Clear();
 
             linkedList.Clear();
-
-            Logger.Clear();
         }
 
         // log the cache to console
@@ -123,15 +121,15 @@
         {
             string headerFooter = "----------------------------------------";
 
-            Logger.Log(headerFooter);
+            Log(headerFooter);
 
-            Logger.Log(nameof(Log) + " <" + typeof(K).ToString() + ", " + typeof(V).ToString() + ">");
+            Log(nameof(Log) + " <" + typeof(K).ToString() + ", " + typeof(V).ToString() + ">");
 
             Traverse(linkedList.First);
 
-            Logger.Log(headerFooter);
+            Log(headerFooter);
 
-            Logger.ConsoleWriteLine();
+            ConsoleWriteLine();
         }
 
         // recursively traverse nodes
@@ -153,7 +151,7 @@
 
             V data = dictionary[key];
 
-            Logger.Log(key?.ToString() + " \t " + data?.ToString());
+            Log(key?.ToString() + " \t " + data?.ToString());
 
             if (node.Next is not null)
             {

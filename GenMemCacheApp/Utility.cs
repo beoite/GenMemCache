@@ -8,7 +8,7 @@ namespace GenMemCacheApp
 
         public static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
-        // random string of length
+        // https://stackoverflow.com/questions/1344221/how-can-i-generate-random-alphanumeric-strings
         public static string RandomString(int length)
         {
             return new string(Enumerable.Repeat(Chars, length).Select(s => s[System.Random.Shared.Next(s.Length)]).ToArray());

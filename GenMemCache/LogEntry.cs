@@ -2,7 +2,7 @@
 {
     public class LogEntry
     {
-        public ulong Id { get; set; } = 0;
+        public uint Id { get; set; } = 0;
 
         public long Elapsed { get; set; } = -1;
 

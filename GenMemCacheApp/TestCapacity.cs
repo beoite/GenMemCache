@@ -24,7 +24,7 @@
             cache.CapacityReached -= CapacityReachedHandler;
         }
 
-        private void CapacityReachedHandler(object? sender, GenMemCache.CapacityReachedEventArgs<int> e)
+        private void CapacityReachedHandler(object? sender, GenMemCache.CapacityReachedEventArgs e)
         {
             System.Console.WriteLine(nameof(CapacityReachedHandler) + " " + sender?.GetType().ToString() + " " + e.Message);
         }

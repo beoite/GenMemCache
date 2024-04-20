@@ -98,7 +98,7 @@
 
                 bool isRemovedDictionary = dictionary.TryRemove(key, out outItem);
 
-                CapacityReachedEventArgs<K> capacityReachedEventArgs = new CapacityReachedEventArgs<K>();
+                CapacityReachedEventArgs capacityReachedEventArgs = new CapacityReachedEventArgs();
 
                 capacityReachedEventArgs.Message = nameof(Evict) + " " + key.ToString();
 
@@ -160,14 +160,14 @@
         }
 
         // https://learn.microsoft.com/en-us/dotnet/api/system.eventhandler-1?view=net-8.0
-        protected virtual void OnCapacityReached(CapacityReachedEventArgs<K> e)
+        protected virtual void OnCapacityReached(CapacityReachedEventArgs e)
         {
             if (CapacityReached is null)
             {
                 return;
             }
 
-            System.EventHandler<CapacityReachedEventArgs<K>> handler = CapacityReached;
+            System.EventHandler<CapacityReachedEventArgs> handler = CapacityReached;
 
             if (handler is not null)
             {
@@ -175,6 +175,6 @@
             }
         }
 
-        public event System.EventHandler<CapacityReachedEventArgs<K>>? CapacityReached;
+        public event System.EventHandler<CapacityReachedEventArgs>? CapacityReached;
     }
 }

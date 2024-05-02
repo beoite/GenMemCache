@@ -2,9 +2,10 @@
 {
     public class Cache<K, V> : Logger where K : notnull where V : notnull
     {
+        // https://csharpindepth.com/articles/Singleton
+
         private const System.Threading.LazyThreadSafetyMode threadSafetyMode = System.Threading.LazyThreadSafetyMode.ExecutionAndPublication;
 
-        // https://csharpindepth.com/articles/Singleton
         private static readonly System.Lazy<Cache<K, V>> lazy = new System.Lazy<Cache<K, V>>(() => new Cache<K, V>(), threadSafetyMode);
 
         private System.Collections.Concurrent.ConcurrentDictionary<K, V> dictionary = new System.Collections.Concurrent.ConcurrentDictionary<K, V>();
@@ -116,24 +117,16 @@
             linkedList.Clear();
         }
 
-        // log the cache to console
+        // log the cache
         public void Log()
         {
-            string headerFooter = "----------------------------------------";
+            base.Clear();
 
-            Log(headerFooter);
-
-            Log(nameof(Log) + " <" + typeof(K).ToString() + ", " + typeof(V).ToString() + ">");
-
-            Traverse(linkedList.First);
-
-            Log(headerFooter);
-
-            ConsoleWriteLine();
+            RecursiveLog(linkedList.First);
         }
 
         // recursively traverse nodes
-        private void Traverse(System.Collections.Generic.LinkedListNode<K>? node)
+        private void RecursiveLog(System.Collections.Generic.LinkedListNode<K>? node)
         {
             if (node is null)
             {
@@ -155,7 +148,7 @@
 
             if (node.Next is not null)
             {
-                Traverse(node.Next);
+                RecursiveLog(node.Next);
             }
         }
 

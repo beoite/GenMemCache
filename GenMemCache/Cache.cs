@@ -144,7 +144,7 @@
 
             V data = dictionary[key];
 
-            Log(key?.ToString() + " \t " + data?.ToString());
+            Log(key?.ToString() + " " + data?.ToString());
 
             if (node.Next is not null)
             {
